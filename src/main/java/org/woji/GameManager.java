@@ -8,9 +8,6 @@ import java.util.ArrayList;
 
 public class GameManager {
 
-    int worldHeight = 10;
-    int worldWidth = 10;
-
     // Private Variables
     private World world;
     private GamePanel gamePanel;
@@ -18,7 +15,7 @@ public class GameManager {
     // GameObjects
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
     private Player player;
-    private Block[][] blockMap;
+    private Tile[][] tileMap;
 
     public void initialize() {
         // JBox2D World
@@ -45,6 +42,9 @@ public class GameManager {
         frame.add(gamePanel);
         frame.addKeyListener(inputHandler);
         frame.setVisible(true);
+
+        // Test
+        // JNoise noisePipeline=JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
     }
 
     public void update(float dt) {

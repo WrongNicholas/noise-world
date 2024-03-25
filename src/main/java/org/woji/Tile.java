@@ -1,10 +1,10 @@
 package org.woji;
 
-public class Block {
+public class Tile {
 
     private int id;
 
-    public Block(int id) {
+    public Tile(int id) {
         this.id = id;
     }
 
