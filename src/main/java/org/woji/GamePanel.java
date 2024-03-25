@@ -12,11 +12,9 @@ public class GamePanel extends JPanel {
     private boolean drawHitBoxes;
 
     private ArrayList<GameObject> gameObjects;
-    private Player player;
 
-    public void initialize(boolean drawHitBoxes, ArrayList<GameObject> gameObjects, Player player) {
+    public void initialize(boolean drawHitBoxes, ArrayList<GameObject> gameObjects) {
         this.gameObjects = gameObjects;
-        this.player = player;
     }
 
     @Override
@@ -25,9 +23,6 @@ public class GamePanel extends JPanel {
         for (GameObject object : gameObjects) {
             paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize());
         }
-
-        // Paint Player's BufferedImage
-        paintBufferedImage(g, player.getBufferedImage(), player.getPosition(), player.getSize());
     }
 
     private void paintBufferedImage(Graphics g, BufferedImage bufferedImage, Vec2 position, Vec2 size) {

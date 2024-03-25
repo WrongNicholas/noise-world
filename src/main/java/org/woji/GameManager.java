@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 public class GameManager {
 
+    int worldHeight = 10;
+    int worldWidth = 10;
+
     // Private Variables
     private World world;
     private GamePanel gamePanel;
@@ -15,28 +18,30 @@ public class GameManager {
     // GameObjects
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
     private Player player;
+    private Block[][] blockMap;
 
     public void initialize() {
-        // Initialize JBox2D
+        // JBox2D World
         world = new World(new Vec2(0f, 0f));
 
-        // Initialize InputHandler
+        // InputHandler
         InputHandler inputHandler = new InputHandler();
 
-        // Initialize Player
+        // Player
         player = new Player(inputHandler, world, new Vec2(100, 100));
+        gameObjects.add(player);
 
-        // Initialize GamePanel
+        // GamePanel
         gamePanel = new GamePanel();
-        gamePanel.initialize(true, gameObjects, player);
+        gamePanel.initialize(true, gameObjects);
 
-        // Initialize JFrame
+        // JFrame
         JFrame frame = new JFrame("Noise World");
         frame.setSize(800, 800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Add GamePanel and InputHandler to Frame before setting to Visible
+        // Add GamePanel and InputHandler to JFrame before setting to Visible
         frame.add(gamePanel);
         frame.addKeyListener(inputHandler);
         frame.setVisible(true);
@@ -44,15 +49,12 @@ public class GameManager {
 
     public void update(float dt) {
         // Step Physics World
-        world.step(dt, 6, 4);
+        world.step(dt, 6, 2);
 
         // Update GameObjects
         for (GameObject gameObject : gameObjects) {
             gameObject.update(dt);
         }
-
-        // Update Player
-        player.update(dt);
     }
 
     // Call GamePanel Paint

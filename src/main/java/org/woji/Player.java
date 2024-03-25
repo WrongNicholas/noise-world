@@ -9,7 +9,7 @@ public class Player extends GameObject {
     float speed = 400.f;
 
     public Player(InputHandler inputHandler, World world, Vec2 position) {
-        super(world, position, new Vec2(32.f, 32.f), "src/main/resources/player.png");
+        super(world, position, new Vec2(64.f, 64.f), "src/main/resources/player.png");
         this.inputHandler = inputHandler;
     }
 
