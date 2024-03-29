@@ -14,6 +14,7 @@ public class GamePanel extends JPanel {
     private ArrayList<GameObject> gameObjects;
 
     public void initialize(boolean drawHitBoxes, ArrayList<GameObject> gameObjects) {
+        this.drawHitBoxes = drawHitBoxes;
         this.gameObjects = gameObjects;
     }
 

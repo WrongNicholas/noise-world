@@ -1,6 +1,7 @@
 package org.woji;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 
 import javax.swing.*;
@@ -14,19 +15,20 @@ public class GameManager {
 
     // GameObjects
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private Player player;
-    private Tile[][] tileMap;
 
     public void initialize() {
         // JBox2D World
-        world = new World(new Vec2(0f, 0f));
+        world = new World(new Vec2(0f, 1200.f));
 
         // InputHandler
         InputHandler inputHandler = new InputHandler();
 
         // Player
-        player = new Player(inputHandler, world, new Vec2(100, 100));
+        Player player = new Player(inputHandler, world, new Vec2(100, 100));
         gameObjects.add(player);
+        for (int i = 0; i < 6; i++) {
+            gameObjects.add(new GameObject(world, BodyType.STATIC, new Vec2(100.f + i * 64.f, 600.f), new Vec2(64.f, 64.f), "src/main/resources/simple_tile.png"));
+        }
 
         // GamePanel
         gamePanel = new GamePanel();
