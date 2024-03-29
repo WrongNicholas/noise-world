@@ -11,7 +11,9 @@ public class GameManager {
 
     // Private Variables
     private World world;
+    private InputHandler inputHandler;
     private GamePanel gamePanel;
+    private JFrame frame;
 
     // GameObjects
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
@@ -21,7 +23,7 @@ public class GameManager {
         world = new World(new Vec2(0f, 1200.f));
 
         // InputHandler
-        InputHandler inputHandler = new InputHandler();
+        this.inputHandler = new InputHandler();
 
         // Player
         Player player = new Player(inputHandler, world, new Vec2(100, 100));
@@ -35,7 +37,7 @@ public class GameManager {
         gamePanel.initialize(true, gameObjects);
 
         // JFrame
-        JFrame frame = new JFrame("Noise World");
+        frame = new JFrame("Noise World");
         frame.setSize(800, 800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,5 +64,13 @@ public class GameManager {
     // Call GamePanel Paint
     public void render() {
         gamePanel.repaint();
+    }
+
+    public boolean running() {
+        return !inputHandler.windowShouldClose();
+    }
+
+    public void terminate() {
+        frame.dispose();
     }
 }

@@ -8,7 +8,7 @@ public class Main {
         game.initialize();
 
         long previousTime = System.currentTimeMillis();
-        while (true) {
+        while (game.running()) {
             long currentTime = System.currentTimeMillis();
             float deltaTime = currentTime - previousTime;
             previousTime = currentTime;
@@ -20,6 +20,8 @@ public class Main {
             game.render();
         }
 
+        game.terminate();
+        System.exit(0);
     }
 
 }

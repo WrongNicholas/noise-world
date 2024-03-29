@@ -13,6 +13,8 @@ public class Player extends GameObject {
     private final World world;
 
     boolean isGrounded = true;
+    private float speed = 400.f;
+    private float jumpForce = 700.f;
 
     public Player(InputHandler inputHandler, World world, Vec2 position) {
         super(world, BodyType.DYNAMIC, position, new Vec2(64.f, 64.f), "src/main/resources/player.png");
@@ -28,12 +30,11 @@ public class Player extends GameObject {
 
         // Calculate Movement Vector
         Vec2 inputVector = inputHandler.getInputVector();
-        float speed = 400.f;
         Vec2 movementVector = new Vec2(inputVector.x * speed, body.getLinearVelocity().y);
         body.setLinearVelocity(movementVector);
 
         if (inputVector.y < 0.f && isGrounded) {
-            body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, -1000.f));
+            body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, -jumpForce));
         }
     }
 
