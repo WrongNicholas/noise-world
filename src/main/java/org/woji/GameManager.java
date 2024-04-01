@@ -17,7 +17,6 @@ public class GameManager {
 
     // GameObjects
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private final ArrayList<GameObject> gameObjectsToAdd = new ArrayList<>();
 
     public void initialize() {
         // JBox2D World
@@ -52,9 +51,8 @@ public class GameManager {
     }
 
     public void update(float dt) {
-//        gameObjects.addAll(gameObjectsToAdd);
-//        gameObjectsToAdd.clear();
 
+        /* Begin Test Code */
         for (int i = 0; i < gameObjects.size(); i++) {
             GameObject gameObject = gameObjects.get(i);
             if (gameObject.getClass() != Player.class) {
@@ -67,6 +65,7 @@ public class GameManager {
         for (int i = 0; i < 6; i++) {
             gameObjects.add(new GameObject(world, BodyType.STATIC, new Vec2(100.f + i * 64.f, 600.f), new Vec2(64.f, 64.f), "src/main/resources/simple_tile.png"));
         }
+        /* End Test Code */
 
         // Step Physics World
         world.step(dt, 6, 2);
