@@ -9,7 +9,7 @@ public class InputHandler implements KeyListener {
 
     private boolean up, down, left, right;
 
-    private boolean windowShouldClose = false;
+    private boolean windowShouldClose = false, showHitBoxes = false;
 
     public Vec2 getInputVector() {
         return new Vec2((right ? 1 : 0) - (left ? 1 : 0), (down ? 1 : 0) - (up ? 1 : 0));
@@ -40,6 +40,9 @@ public class InputHandler implements KeyListener {
             case KeyEvent.VK_ESCAPE:
                 windowShouldClose = true;
                 break;
+            case KeyEvent.VK_H:
+                showHitBoxes = !showHitBoxes;
+                break;
         }
     }
 
@@ -64,5 +67,9 @@ public class InputHandler implements KeyListener {
 
     public boolean windowShouldClose() {
         return windowShouldClose;
+    }
+
+    public boolean shouldShowHitBoxes() {
+        return showHitBoxes;
     }
 }

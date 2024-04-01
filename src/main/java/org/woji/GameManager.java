@@ -59,6 +59,7 @@ public class GameManager {
 
     // Call GamePanel Paint
     public void render() {
+        gamePanel.update(inputHandler.shouldShowHitBoxes());
         gamePanel.repaint();
     }
     public boolean running() {

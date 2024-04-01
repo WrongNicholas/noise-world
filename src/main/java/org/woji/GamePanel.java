@@ -19,6 +19,10 @@ public class GamePanel extends JPanel {
         this.gameObjects = gameObjects;
     }
 
+    public void update(boolean drawHitBoxes) {
+        this.drawHitBoxes = drawHitBoxes;
+    }
+
     @Override
     public void paint(Graphics g) {
         // Create a copy of the gameObjects list
@@ -33,6 +37,7 @@ public class GamePanel extends JPanel {
         g.drawImage(bufferedImage, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
 
         if (drawHitBoxes) {
+            g.setColor(Color.RED);
             g.drawRect((int) position.x, (int) position.y, (int) size.x, (int) size.y);
         }
     }
