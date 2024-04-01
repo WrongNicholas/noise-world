@@ -12,15 +12,7 @@ public class InputHandler implements KeyListener {
     private boolean windowShouldClose = false;
 
     public Vec2 getInputVector() {
-        Vec2 inputVector = new Vec2((right ? 1 : 0) - (left ? 1 : 0), (down ? 1 : 0) - (up ? 1 : 0));
-
-        /*float magnitude = (float)Math.sqrt(Math.pow(inputVector.x, 2) + Math.pow(inputVector.y, 2));
-        if (magnitude != 0)
-        {
-            inputVector = new Vec2(inputVector.x / magnitude, inputVector.y / magnitude);
-        }*/
-
-        return inputVector;
+        return new Vec2((right ? 1 : 0) - (left ? 1 : 0), (down ? 1 : 0) - (up ? 1 : 0));
     }
 
     @Override
