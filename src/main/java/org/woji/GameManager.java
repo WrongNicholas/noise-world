@@ -45,28 +45,9 @@ public class GameManager {
         frame.add(gamePanel);
         frame.addKeyListener(inputHandler);
         frame.setVisible(true);
-
-        // Test
-        // JNoise noisePipeline=JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
     }
 
     public void update(float dt) {
-
-        /* Begin Test Code */
-        for (int i = 0; i < gameObjects.size(); i++) {
-            GameObject gameObject = gameObjects.get(i);
-            if (gameObject.getClass() != Player.class) {
-                gameObjects.remove(gameObject);
-                world.destroyBody(gameObject.body);
-                i--;
-            }
-        }
-
-        for (int i = 0; i < 6; i++) {
-            gameObjects.add(new GameObject(world, BodyType.STATIC, new Vec2(100.f + i * 64.f, 600.f), new Vec2(64.f, 64.f), "src/main/resources/simple_tile.png"));
-        }
-        /* End Test Code */
-
         // Step Physics World
         world.step(dt, 6, 2);
 
@@ -80,11 +61,9 @@ public class GameManager {
     public void render() {
         gamePanel.repaint();
     }
-
     public boolean running() {
         return !inputHandler.windowShouldClose();
     }
-
     public void terminate() {
         frame.dispose();
     }

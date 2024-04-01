@@ -11,6 +11,7 @@ public class Player extends GameObject {
     private final World world;
 
     boolean isGrounded = true;
+    boolean previousJumpPressed = false;
 
     public Player(InputHandler inputHandler, World world, Vec2 position) {
         super(world, BodyType.DYNAMIC, position, new Vec2(64.f, 64.f), "src/main/resources/player.png");
@@ -34,9 +35,16 @@ public class Player extends GameObject {
         body.setLinearVelocity(movementVector);
 
         // Jump
-        if (inputVector.y < 0.f && isGrounded) {
+        boolean jumpPressed = inputVector.y == -1.f;
+        if (jumpPressed && isGrounded) {
             body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, -jumpForce));
         }
+
+        // Jump Cancel
+        if (!jumpPressed && previousJumpPressed && body.getLinearVelocity().y < 0.f) {
+            body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, body.getLinearVelocity().y * 0.7f));
+        }
+        previousJumpPressed = jumpPressed;
 
         // Temporary "Respawn"
         if (getPosition().y > 1000.f) {
