@@ -42,7 +42,7 @@ public class Player extends GameObject {
 
         // Jump Cancel
         if (!jumpPressed && previousJumpPressed && body.getLinearVelocity().y < 0.f) {
-            body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, body.getLinearVelocity().y * 0.7f));
+            body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, body.getLinearVelocity().y * 0.5f));
         }
         previousJumpPressed = jumpPressed;
 
