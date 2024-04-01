@@ -75,4 +75,9 @@ public class GameObject {
     public void update(float dt) {
 
     }
+
+    public void dispose() {
+        body.destroyFixture(body.getFixtureList());
+        body = null;
+    }
 }

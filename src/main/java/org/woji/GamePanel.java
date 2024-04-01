@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GamePanel extends JPanel {
 
@@ -20,10 +21,11 @@ public class GamePanel extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        // Create a copy of the gameObjects list
+        ArrayList<GameObject> objectsToPaint = new ArrayList<>(gameObjects);
+
         // Paint GameObjects' BufferedImage
-        for (GameObject object : gameObjects) {
-            paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize());
-        }
+        objectsToPaint.stream().filter(Objects::nonNull).forEach(object -> paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize()));
     }
 
     private void paintBufferedImage(Graphics g, BufferedImage bufferedImage, Vec2 position, Vec2 size) {

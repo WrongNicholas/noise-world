@@ -2,9 +2,7 @@ package org.woji;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
 
 public class Player extends GameObject {
@@ -13,8 +11,6 @@ public class Player extends GameObject {
     private final World world;
 
     boolean isGrounded = true;
-    private float speed = 400.f;
-    private float jumpForce = 700.f;
 
     public Player(InputHandler inputHandler, World world, Vec2 position) {
         super(world, BodyType.DYNAMIC, position, new Vec2(64.f, 64.f), "src/main/resources/player.png");
@@ -26,15 +22,26 @@ public class Player extends GameObject {
     public void update(float dt) {
         super.update(dt);
 
+        // Check isGrounded
         checkGrounded();
+
+        float speed = 400.f;
+        float jumpForce = 700.f;
 
         // Calculate Movement Vector
         Vec2 inputVector = inputHandler.getInputVector();
         Vec2 movementVector = new Vec2(inputVector.x * speed, body.getLinearVelocity().y);
         body.setLinearVelocity(movementVector);
 
+        // Jump
         if (inputVector.y < 0.f && isGrounded) {
             body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, -jumpForce));
+        }
+
+        // Temporary "Respawn"
+        if (getPosition().y > 1000.f) {
+            body.setTransform(new Vec2(100.f, 100.f), body.getAngle());
+            body.setLinearVelocity(new Vec2(0.f, 0.f));
         }
     }
 
