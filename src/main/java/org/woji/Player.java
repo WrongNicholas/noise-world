@@ -14,7 +14,7 @@ public class Player extends GameObject {
     boolean previousJumpPressed = false;
 
     public Player(InputHandler inputHandler, World world, Vec2 position) {
-        super(world, BodyType.DYNAMIC, position, new Vec2(64.f, 64.f), "src/main/resources/player.png");
+        super(world, BodyType.DYNAMIC, position, new Vec2(60.f, 60.f), "src/main/resources/player.png");
         this.inputHandler = inputHandler;
         this.world = world;
     }
@@ -36,7 +36,7 @@ public class Player extends GameObject {
 
         // Jump
         boolean jumpPressed = inputVector.y == -1.f;
-        if (jumpPressed && isGrounded) {
+        if (jumpPressed && isGrounded && body.getLinearVelocity().y >= 0.f) {
             body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, -jumpForce));
         }
 
@@ -55,8 +55,8 @@ public class Player extends GameObject {
 
     private void checkGrounded() {
         isGrounded = false;
-        Vec2 topLeft = body.getPosition().clone().add(new Vec2(-getSize().x / 2, getSize().y));
-        Vec2 bottomRight = body.getPosition().clone().add(new Vec2(getSize().x / 2, getSize().y * 3/5));
+        Vec2 topLeft = body.getPosition().clone().add(new Vec2(-getSize().x / 2.f + 3.f, getSize().y));
+        Vec2 bottomRight = body.getPosition().clone().add(new Vec2(getSize().x / 2.f - 3.f, getSize().y * 3/5));
         AABB aabb = new AABB(topLeft, bottomRight);
         world.queryAABB(fixture -> {
             if (!fixture.equals(body.getFixtureList())) {

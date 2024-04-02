@@ -36,12 +36,11 @@ public class GameObject {
 
         // Define a Shape for the Object
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(size.x / 2, size.y / 2);
+        shape.setAsBox(size.x / 2.f, size.y / 2.f);
 
         // Create a Fixture Definition
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0f;
         fixtureDef.friction = 0.f;
 
         // Attach the Shape to Body

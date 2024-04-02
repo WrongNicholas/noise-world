@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class GamePanel extends JPanel {
@@ -15,10 +16,13 @@ public class GamePanel extends JPanel {
     private ArrayList<GameObject> gameObjects;
     private Player player;
 
-    public void initialize(boolean drawHitBoxes, ArrayList<GameObject> gameObjects, Player player) {
+    Chunk[] chunks;
+
+    public void initialize(boolean drawHitBoxes, ArrayList<GameObject> gameObjects, Player player, Chunk[] chunks) {
         this.drawHitBoxes = drawHitBoxes;
         this.gameObjects = gameObjects;
         this.player = player;
+        this.chunks = chunks;
     }
 
     public void update(boolean drawHitBoxes) {
@@ -27,6 +31,10 @@ public class GamePanel extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        // Paint Background
+        g.setColor(new Color(50, 173, 207));
+        g.fillRect(0, 0, getWidth(), getHeight());
+
         // Paint Player's BufferedImage
         paintPlayer(g);
 
@@ -44,6 +52,8 @@ public class GamePanel extends JPanel {
 
         // Paint GameObjects' BufferedImage
         objectsToPaint.stream().filter(Objects::nonNull).forEach(object -> paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize()));
+
+        Arrays.stream(chunks).filter(Objects::nonNull).forEach(chunk -> chunk.render(g));
     }
 
     private void paintBufferedImage(Graphics g, BufferedImage bufferedImage, Vec2 position, Vec2 size) {
