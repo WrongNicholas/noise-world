@@ -14,7 +14,6 @@ public class GameObject {
     // Field Variables
     protected Body body;
     private BufferedImage bufferedImage;
-
     private final Vec2 size;
 
     // Constructor
@@ -58,6 +57,11 @@ public class GameObject {
         }
     }
 
+    // Public Methods
+    public void update(float dt) {
+
+    }
+
     // Accessors
     public BufferedImage getBufferedImage() {
         return bufferedImage;
@@ -69,15 +73,5 @@ public class GameObject {
 
     public Vec2 getSize() {
         return size;
-    }
-
-    // Public Methods
-    public void update(float dt) {
-
-    }
-
-    public void dispose() {
-        body.destroyFixture(body.getFixtureList());
-        body = null;
     }
 }

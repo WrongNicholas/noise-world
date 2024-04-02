@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class GameManager {
 
-    // Private Variables
+    // Field Variables
     private World world;
     private InputHandler inputHandler;
     private GamePanel gamePanel;
@@ -19,6 +19,7 @@ public class GameManager {
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
 
+    // GameManager Initialization Method
     public void initialize() {
         // JBox2D World
         world = new World(new Vec2(0f, 1200.f));
@@ -52,6 +53,7 @@ public class GameManager {
         // Step Physics World
         world.step(dt, 6, 2);
 
+        // Update Player
         player.update(dt);
 
         // Update GameObjects
@@ -65,9 +67,11 @@ public class GameManager {
         gamePanel.update(inputHandler.shouldShowHitBoxes());
         gamePanel.repaint();
     }
+
     public boolean running() {
         return !inputHandler.windowShouldClose();
     }
+
     public void terminate() {
         frame.dispose();
     }
