@@ -55,9 +55,9 @@ public class Player extends GameObject {
 
     private void checkGrounded() {
         isGrounded = false;
-        Vec2 pos1 = body.getPosition().clone().add(new Vec2(-getSize().x / 2, getSize().y));
-        Vec2 pos2 = body.getPosition().clone().add(new Vec2(getSize().x / 2, getSize().y * 3/5));
-        AABB aabb = new AABB(pos1, pos2);
+        Vec2 topLeft = body.getPosition().clone().add(new Vec2(-getSize().x / 2, getSize().y));
+        Vec2 bottomRight = body.getPosition().clone().add(new Vec2(getSize().x / 2, getSize().y * 3/5));
+        AABB aabb = new AABB(topLeft, bottomRight);
         world.queryAABB(fixture -> {
             if (!fixture.equals(body.getFixtureList())) {
                 isGrounded = true;

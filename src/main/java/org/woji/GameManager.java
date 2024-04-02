@@ -16,6 +16,7 @@ public class GameManager {
     private JFrame frame;
 
     // GameObjects
+    private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
 
     public void initialize() {
@@ -25,15 +26,15 @@ public class GameManager {
         // InputHandler
         this.inputHandler = new InputHandler();
 
-        // Player
-        gameObjects.add(new Player(inputHandler, world, new Vec2(100, 100)));
+        // Player and Tiles
+        player = new Player(inputHandler, world, new Vec2(100, 100));
         for (int i = 0; i < 6; i++) {
             gameObjects.add(new GameObject(world, BodyType.STATIC, new Vec2(100.f + i * 64.f, 600.f), new Vec2(64.f, 64.f), "src/main/resources/simple_tile.png"));
         }
 
         // GamePanel
         gamePanel = new GamePanel();
-        gamePanel.initialize(true, gameObjects);
+        gamePanel.initialize(true, gameObjects, player);
 
         // JFrame
         frame = new JFrame("Noise World");
@@ -50,6 +51,8 @@ public class GameManager {
     public void update(float dt) {
         // Step Physics World
         world.step(dt, 6, 2);
+
+        player.update(dt);
 
         // Update GameObjects
         for (GameObject gameObject : gameObjects) {
