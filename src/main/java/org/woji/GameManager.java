@@ -17,6 +17,8 @@ public class GameManager {
     private GamePanel gamePanel;
     private JFrame frame;
 
+    private TextureHandler textureHandler;
+
     // GameObjects
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
@@ -26,23 +28,24 @@ public class GameManager {
     // GameManager Initialization Method
     public void initialize() {
         // JBox2D World
-        world = new World(new Vec2(0f, 1200.f));
+        world = new World(new Vec2(0f, 1600.f));
 
         // InputHandler
         this.inputHandler = new InputHandler();
 
-        // Player and Tiles
-        player = new Player(inputHandler, world, new Vec2(0, -100));
-//        for (int i = 0; i < 6; i++) {
-//            gameObjects.add(new GameObject(world, BodyType.STATIC, new Vec2(100.f + i * 64.f, 600.f), new Vec2(64.f, 64.f), "src/main/resources/simple_tile.png"));
-//        }
+        textureHandler = new TextureHandler();
+        textureHandler.initializeTextures();
+
+        // Player
+        Vec2 playerPosition = new Vec2(0, -100);
+        player = new Player(inputHandler, world, playerPosition, textureHandler);
 
         JNoise noise =JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
 
-        // Test Code
+        // Chunks
         chunks = new Chunk[2];
         for (int i = 0; i < chunks.length; i++) {
-            chunks[i] = new Chunk(world, noise, i);
+            chunks[i] = new Chunk(textureHandler, world, noise, i);
         }
 
         // GamePanel
@@ -69,7 +72,7 @@ public class GameManager {
         // Update Player
         player.update(dt);
 
-        // Update GameObjects
+        // Update Rest of GameObjects
         for (GameObject gameObject : gameObjects) {
             gameObject.update(dt);
         }

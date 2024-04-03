@@ -17,11 +17,11 @@ public class GameObject {
     private final Vec2 size;
 
     // Constructor
-    public GameObject(World world, BodyType bodyType, Vec2 position, Vec2 size, String imageFilePath) {
+    public GameObject(World world, BodyType bodyType, Vec2 position, Vec2 size, TextureHandler textureHandler, String textureFileName) {
         this.size = size;
 
         initializeBody(world, bodyType, position);
-        initializeBufferedImage(imageFilePath);
+        bufferedImage = textureHandler.getBufferedImage(textureFileName);
     }
 
     // Initialization Methods

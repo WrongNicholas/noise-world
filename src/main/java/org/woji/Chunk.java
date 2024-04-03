@@ -13,54 +13,45 @@ import java.io.IOException;
 
 public class Chunk {
 
-    private Body body;
-    BufferedImage grass, dirt, stone;
+    private TextureHandler textureHandler;
 
-    // Chunk Size
-    private final int chunkWidth = 16, chunkHeight = 16;
-    private final float blockSize = 64.f;
-    private final int chunkOffset;
+    private Body body;
+
+    private final int CHUNK_WIDTH = 16;
+    private final int CHUNK_HEIGHT = 16;
+    private final float BLOCK_SIZE = 64.f;
+
+    private final float totalChunkWidthPixels;
 
     // Block Map represented as Integer Array
     private final int[] blockMap;
 
-    public Chunk(World world, JNoise noise, int chunkOffset) {
-        blockMap = new int[chunkWidth * chunkHeight];
-        this.chunkOffset = chunkOffset;
+    public Chunk(TextureHandler textureHandler, World world, JNoise noise, int chunkOffset) {
+        this.textureHandler = textureHandler;
+
+        blockMap = new int[CHUNK_WIDTH * CHUNK_HEIGHT];
+        this.totalChunkWidthPixels = chunkOffset * CHUNK_WIDTH * BLOCK_SIZE;
 
         initializeBlockMapValues(noise, chunkOffset);
         initializeBody(world, chunkOffset);
-
-        initializeBufferedImage();
-    }
-
-    // Temporary
-    private void initializeBufferedImage() {
-        try {
-            grass = ImageIO.read(new File("src/main/resources/grass.png"));
-            dirt = ImageIO.read(new File("src/main/resources/dirt.png"));
-            stone = ImageIO.read(new File("src/main/resources/stone.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // Initialization Methods
     private void initializeBlockMapValues(JNoise noise, int chunkOffset) {
-        for (int x = 0; x < chunkWidth; x++) {
+        for (int x = 0; x < CHUNK_WIDTH; x++) {
 
-            double noiseValue = Math.abs(noise.evaluateNoise((chunkOffset * chunkWidth * blockSize + x * blockSize) / 1000.0));
-            int height = (int)(noiseValue * chunkHeight);
+            double noiseValue = Math.abs(noise.evaluateNoise((totalChunkWidthPixels + x * BLOCK_SIZE) / 1000.0));
+            int height = (int)(noiseValue * CHUNK_HEIGHT);
 
-            for (int y = 0; y < chunkHeight; y++) {
+            for (int y = 0; y < CHUNK_HEIGHT; y++) {
                 if (y == height) {
-                    blockMap[x + chunkWidth * y] = 1;
+                    blockMap[x + CHUNK_WIDTH * y] = 1;
                 }
                 else if (y > height && y < height + 3) {
-                    blockMap[x + chunkWidth * y] = 2;
+                    blockMap[x + CHUNK_WIDTH * y] = 2;
                 }
                 else if (y >= height + 3) {
-                    blockMap[x + chunkWidth * y] = 3;
+                    blockMap[x + CHUNK_WIDTH * y] = 3;
                 }
             }
         }
@@ -70,17 +61,17 @@ public class Chunk {
         // Create Body Definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
-        bodyDef.position.set(new Vec2(chunkWidth * chunkOffset * blockSize, 0));
+        bodyDef.position.set(new Vec2(totalChunkWidthPixels, 0));
 
         // Create Body in Physics World
         body = world.createBody(bodyDef);
 
         // Generate and Attach Shape to Body
-        for (int y = 0; y < chunkHeight; y++) {
-            for (int x = 0; x < chunkWidth; x++) {
+        for (int y = 0; y < CHUNK_HEIGHT; y++) {
+            for (int x = 0; x < CHUNK_WIDTH; x++) {
 
                 // Skip iteration if block is "Empty"
-                if (blockMap[x + chunkWidth * y] == 0) {
+                if (blockMap[x + CHUNK_WIDTH * y] == 0) {
                     continue;
                 }
 
@@ -99,10 +90,10 @@ public class Chunk {
     private PolygonShape generateBlockPolygonShape(int x, int y) {
         PolygonShape shape = new PolygonShape();
         Vec2[] vertices = {
-                new Vec2(x * blockSize, y * blockSize),              // Top Left
-                new Vec2(x * blockSize, (y + 1) * blockSize),        // Bottom Left
-                new Vec2((x + 1) * blockSize, (y + 1) * blockSize),  // Bottom Right
-                new Vec2((x + 1) * blockSize, y * blockSize)         // Top Right
+                new Vec2(x * BLOCK_SIZE, y * BLOCK_SIZE),              // Top Left
+                new Vec2(x * BLOCK_SIZE, (y + 1) * BLOCK_SIZE),        // Bottom Left
+                new Vec2((x + 1) * BLOCK_SIZE, (y + 1) * BLOCK_SIZE),  // Bottom Right
+                new Vec2((x + 1) * BLOCK_SIZE, y * BLOCK_SIZE)         // Top Right
         };
 
         shape.set(vertices, vertices.length);
@@ -111,17 +102,17 @@ public class Chunk {
 
     // Public Methods
     public void render(Graphics g) {
-        for (int y = 0; y < chunkHeight; y++) {
-            for (int x = 0; x < chunkWidth; x++) {
-                if (blockMap[x + chunkWidth * y] != 0) {
-                    BufferedImage bufferedImage = switch (blockMap[x + chunkWidth * y]) {
-                        case 1 -> grass;
-                        case 2 -> dirt;
-                        case 3 -> stone;
+        for (int y = 0; y < CHUNK_HEIGHT; y++) {
+            for (int x = 0; x < CHUNK_WIDTH; x++) {
+                if (blockMap[x + CHUNK_WIDTH * y] != 0) {
+                    BufferedImage bufferedImage = switch (blockMap[x + CHUNK_WIDTH * y]) {
+                        case 1 -> textureHandler.getBufferedImage("grass");
+                        case 2 -> textureHandler.getBufferedImage("dirt");
+                        case 3 -> textureHandler.getBufferedImage("stone");
                         default -> null;
                     };
                     if (bufferedImage != null)
-                        g.drawImage(bufferedImage, (int)(x * blockSize + chunkWidth * chunkOffset * blockSize + blockSize / 2.f), (int)(y * blockSize + blockSize / 2.f), (int)blockSize, (int)blockSize, null);
+                        g.drawImage(bufferedImage, (int)(x * BLOCK_SIZE + totalChunkWidthPixels + BLOCK_SIZE / 2.f), (int)(y * BLOCK_SIZE + BLOCK_SIZE / 2.f), (int)BLOCK_SIZE, (int)BLOCK_SIZE, null);
                 }
             }
         }
