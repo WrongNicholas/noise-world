@@ -67,7 +67,8 @@ public class GamePanel extends JPanel {
     }
 
     private void paintPlayer(Graphics g) {
+        int offset = 3;
         Vec2 playerSize = player.getSize();
-        paintBufferedImage(g, player.getBufferedImage(), new Vec2(getWidth() / 2.f - playerSize.x / 2.f, getHeight() / 2.f - playerSize.y / 2.f), playerSize);
+        paintBufferedImage(g, player.getBufferedImage(), new Vec2(getWidth() / 2.f - playerSize.x / 2.f + offset, getHeight() / 2.f - playerSize.y / 2.f + offset), playerSize);
     }
 }

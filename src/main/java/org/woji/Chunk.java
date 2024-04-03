@@ -49,7 +49,7 @@ public class Chunk {
     private void initializeBlockMapValues(JNoise noise, int chunkOffset) {
         for (int x = 0; x < chunkWidth; x++) {
 
-            double noiseValue = Math.abs(noise.evaluateNoise((chunkOffset * chunkWidth + x) / 50.0));
+            double noiseValue = Math.abs(noise.evaluateNoise((chunkOffset * chunkWidth * blockSize + x * blockSize) / 1000.0));
             int height = (int)(noiseValue * chunkHeight);
 
             for (int y = 0; y < chunkHeight; y++) {
@@ -114,18 +114,12 @@ public class Chunk {
         for (int y = 0; y < chunkHeight; y++) {
             for (int x = 0; x < chunkWidth; x++) {
                 if (blockMap[x + chunkWidth * y] != 0) {
-                    BufferedImage bufferedImage = null;
-                    switch (blockMap[x + chunkWidth * y]) {
-                        case 1:
-                            bufferedImage = grass;
-                            break;
-                        case 2:
-                            bufferedImage = dirt;
-                            break;
-                        case 3:
-                            bufferedImage = stone;
-                            break;
-                    }
+                    BufferedImage bufferedImage = switch (blockMap[x + chunkWidth * y]) {
+                        case 1 -> grass;
+                        case 2 -> dirt;
+                        case 3 -> stone;
+                        default -> null;
+                    };
                     if (bufferedImage != null)
                         g.drawImage(bufferedImage, (int)(x * blockSize + chunkWidth * chunkOffset * blockSize + blockSize / 2.f), (int)(y * blockSize + blockSize / 2.f), (int)blockSize, (int)blockSize, null);
                 }
