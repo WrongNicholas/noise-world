@@ -42,8 +42,8 @@ public class Player extends GameObject {
             return;
         }
 
-        float speed = 400.f;
-        float jumpForce = 650.f;
+        float speed = 350.f;
+        float jumpForce = 660.f;
 
         // Calculate Movement Vector
         Vec2 inputVector = inputHandler.getInputVector();

@@ -17,8 +17,6 @@ public class GameManager {
     private GamePanel gamePanel;
     private JFrame frame;
 
-    private TextureHandler textureHandler;
-
     // GameObjects
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
@@ -33,7 +31,7 @@ public class GameManager {
         // InputHandler
         this.inputHandler = new InputHandler();
 
-        textureHandler = new TextureHandler();
+        TextureHandler textureHandler = new TextureHandler();
         textureHandler.initializeTextures();
 
         // Player
@@ -43,7 +41,7 @@ public class GameManager {
         JNoise noise =JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
 
         // Chunks
-        chunks = new Chunk[2];
+        chunks = new Chunk[10];
         for (int i = 0; i < chunks.length; i++) {
             chunks[i] = new Chunk(textureHandler, world, noise, i);
         }
@@ -64,7 +62,8 @@ public class GameManager {
         frame.setVisible(true);
     }
 
-    // Public Methods
+    float t = 0.f;
+    
     public void update(float dt) {
         // Step Physics World
         world.step(dt, 6, 2);
