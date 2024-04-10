@@ -40,7 +40,7 @@ public class GameManager {
 
         JNoise noise =JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
 
-        // Chunks
+        // Chunks (temporary initialization method)
         chunks = new Chunk[10];
         for (int i = 0; i < chunks.length; i++) {
             chunks[i] = new Chunk(textureHandler, world, noise, i);
@@ -62,8 +62,6 @@ public class GameManager {
         frame.setVisible(true);
     }
 
-    float t = 0.f;
-    
     public void update(float dt) {
         // Step Physics World
         world.step(dt, 6, 2);

@@ -13,7 +13,7 @@ public class GameObject {
 
     // Field Variables
     protected Body body;
-    private BufferedImage bufferedImage;
+    private final BufferedImage bufferedImage;
     private final Vec2 size;
 
     // Constructor
@@ -45,15 +45,6 @@ public class GameObject {
 
         // Attach the Shape to Body
         body.createFixture(fixtureDef);
-    }
-
-    private void initializeBufferedImage(String imageFilePath) {
-        // Try to load BufferedImage from Image FilePath
-        try {
-            bufferedImage = ImageIO.read(new File(imageFilePath));
-        } catch (IOException e) {
-            System.err.println("ERROR: Unable to load image at filepath '" + imageFilePath + "'");
-        }
     }
 
     // Public Methods

@@ -29,12 +29,6 @@ public class Player extends GameObject {
         checkGrounded();
 
         handleMovement();
-
-        // Temporary "Respawn"
-//        if (getPosition().y > 1000.f) {
-//            body.setTransform(new Vec2(0.f, -100.f), body.getAngle());
-//            body.setLinearVelocity(new Vec2(0.f, 0.f));
-//        }
     }
 
     private void handleMovement() {
