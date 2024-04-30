@@ -1,10 +1,13 @@
-package org.woji;
+package org.woji.core;
 
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
+import org.woji.entity.GameObject;
+import org.woji.entity.Player;
+import org.woji.world.Chunk;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -25,12 +28,14 @@ public class GameManager {
 
     // GameManager Initialization Method
     public void initialize() {
+
         // JBox2D World
         world = new World(new Vec2(0f, 1600.f));
 
         // InputHandler
         this.inputHandler = new InputHandler();
 
+        // TextureHandler
         TextureHandler textureHandler = new TextureHandler();
         textureHandler.initializeTextures();
 
@@ -38,7 +43,8 @@ public class GameManager {
         Vec2 playerPosition = new Vec2(0, -100);
         player = new Player(inputHandler, world, playerPosition, textureHandler);
 
-        JNoise noise =JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
+        // JNoise
+        JNoise noise = JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
 
         // Chunks (temporary initialization method)
         chunks = new Chunk[10];

@@ -1,4 +1,4 @@
-package org.woji;
+package org.woji.core;
 
 
 import javax.imageio.ImageIO;

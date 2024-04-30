@@ -1,9 +1,10 @@
-package org.woji;
+package org.woji.world;
 
 import de.articdive.jnoise.pipeline.JNoise;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
+import org.woji.core.TextureHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

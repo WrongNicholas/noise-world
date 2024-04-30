@@ -1,9 +1,12 @@
-package org.woji;
+package org.woji.entity;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
+import org.woji.core.InputHandler;
+import org.woji.core.TextureHandler;
+import org.woji.entity.GameObject;
 
 public class Player extends GameObject {
 

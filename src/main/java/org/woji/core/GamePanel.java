@@ -1,6 +1,9 @@
-package org.woji;
+package org.woji.core;
 
 import org.jbox2d.common.Vec2;
+import org.woji.world.Chunk;
+import org.woji.entity.GameObject;
+import org.woji.entity.Player;
 
 import javax.swing.*;
 import java.awt.*;

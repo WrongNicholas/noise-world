@@ -1,4 +1,4 @@
-package org.woji;
+package org.woji.core;
 
 import org.jbox2d.common.Vec2;
 
