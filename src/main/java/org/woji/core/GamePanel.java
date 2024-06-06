@@ -3,7 +3,6 @@ package org.woji.core;
 import org.jbox2d.common.Vec2;
 import org.woji.world.Chunk;
 import org.woji.world.ChunkRenderer;
-import org.woji.world.old_Chunk;
 import org.woji.entity.GameObject;
 import org.woji.entity.Player;
 
@@ -11,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class GamePanel extends JPanel {

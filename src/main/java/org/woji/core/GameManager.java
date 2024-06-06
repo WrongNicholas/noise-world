@@ -9,7 +9,6 @@ import org.woji.entity.GameObject;
 import org.woji.entity.Player;
 import org.woji.world.Chunk;
 import org.woji.world.ChunkFactory;
-import org.woji.world.old_Chunk;
 
 import javax.swing.*;
 import java.util.ArrayList;
