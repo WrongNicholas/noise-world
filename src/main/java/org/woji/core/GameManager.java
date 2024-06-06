@@ -8,6 +8,8 @@ import org.jbox2d.dynamics.*;
 import org.woji.entity.GameObject;
 import org.woji.entity.Player;
 import org.woji.world.Chunk;
+import org.woji.world.ChunkFactory;
+import org.woji.world.old_Chunk;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class GameManager {
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
 
-    Chunk[] chunks;
+    Chunk chunk;
 
     // GameManager Initialization Method
     public void initialize() {
@@ -47,14 +49,12 @@ public class GameManager {
         JNoise noise = JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
 
         // Chunks (temporary initialization method)
-        chunks = new Chunk[10];
-        for (int i = 0; i < chunks.length; i++) {
-            chunks[i] = new Chunk(textureHandler, world, noise, i);
-        }
+        ChunkFactory chunkFactory = new ChunkFactory(world, noise);
+        chunk = chunkFactory.createChunk(0);
 
         // GamePanel
         gamePanel = new GamePanel();
-        gamePanel.initialize(true, gameObjects, player, chunks);
+        gamePanel.initialize(true, textureHandler, gameObjects, player, chunk);
 
         // JFrame
         frame = new JFrame("Noise World");

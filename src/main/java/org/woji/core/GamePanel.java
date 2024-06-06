@@ -2,6 +2,8 @@ package org.woji.core;
 
 import org.jbox2d.common.Vec2;
 import org.woji.world.Chunk;
+import org.woji.world.ChunkRenderer;
+import org.woji.world.old_Chunk;
 import org.woji.entity.GameObject;
 import org.woji.entity.Player;
 
@@ -19,13 +21,17 @@ public class GamePanel extends JPanel {
     private ArrayList<GameObject> gameObjects;
     private Player player;
 
-    Chunk[] chunks;
+    ChunkRenderer chunkRenderer;
 
-    public void initialize(boolean drawHitBoxes, ArrayList<GameObject> gameObjects, Player player, Chunk[] chunks) {
+    Chunk chunk;
+
+    public void initialize(boolean drawHitBoxes, TextureHandler textureHandler, ArrayList<GameObject> gameObjects, Player player, Chunk chunk) {
         this.drawHitBoxes = drawHitBoxes;
         this.gameObjects = gameObjects;
         this.player = player;
-        this.chunks = chunks;
+        this.chunk = chunk;
+
+        chunkRenderer = new ChunkRenderer(textureHandler);
     }
 
     public void update(boolean drawHitBoxes) {
@@ -56,7 +62,7 @@ public class GamePanel extends JPanel {
         // Paint GameObjects' BufferedImage
         objectsToPaint.stream().filter(Objects::nonNull).forEach(object -> paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize()));
 
-        Arrays.stream(chunks).filter(Objects::nonNull).forEach(chunk -> chunk.render(g));
+        chunkRenderer.render(chunk, g);
     }
 
     private void paintBufferedImage(Graphics g, BufferedImage bufferedImage, Vec2 position, Vec2 size) {
@@ -70,6 +76,7 @@ public class GamePanel extends JPanel {
     }
 
     private void paintPlayer(Graphics g) {
+        // Offset because the player draws weird
         int offset = 3;
         Vec2 playerSize = player.getSize();
         paintBufferedImage(g, player.getBufferedImage(), new Vec2(getWidth() / 2.f - playerSize.x / 2.f + offset, getHeight() / 2.f - playerSize.y / 2.f + offset), playerSize);
