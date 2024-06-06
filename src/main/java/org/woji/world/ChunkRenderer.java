@@ -14,9 +14,15 @@ public class ChunkRenderer {
         this.textureHandler = textureHandler;
     }
 
+    public void render(ChunkNode node, Graphics g) {
+        render(node.chunk, g);
+        render(node.prev.chunk, g);
+        render(node.next.chunk, g);
+    }
+
     // Renders the given chunk onto current graphics context
-    public void render(Chunk chunk, Graphics g) {
-        Body body = chunk.getBody();
+    private void render(Chunk chunk, Graphics g) {
+        Body body = chunk.body();
 
         // Skip render if physics body is inactive
         if (!body.isActive()) {
@@ -28,7 +34,7 @@ public class ChunkRenderer {
         final int CHUNK_HEIGHT = 16;
         final float BLOCK_SIZE = 64.f;
 
-        final int[] blockMap = chunk.getBlockMap();
+        final int[] blockMap = chunk.blockMap();
 
         // Iterate through each block in chunk
         for (int y = 0; y < CHUNK_HEIGHT; y++) {
@@ -46,7 +52,7 @@ public class ChunkRenderer {
                 BufferedImage blockImage = textureHandler.getBufferedImage(blockID);
 
                 // Calculate draw positions of block
-                float totalChunkWidthPixels = chunk.getTotalChunkWidthPixels();
+                float totalChunkWidthPixels = chunk.totalChunkWidthPixels();
                 int drawX = (int)(x * BLOCK_SIZE + totalChunkWidthPixels + BLOCK_SIZE / 2.f);
                 int drawY = (int)(y * BLOCK_SIZE + BLOCK_SIZE / 2.f);
 

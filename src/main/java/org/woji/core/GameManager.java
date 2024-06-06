@@ -11,6 +11,7 @@ import org.woji.world.Chunk;
 import org.woji.world.ChunkFactory;
 
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameManager {
@@ -25,7 +26,7 @@ public class GameManager {
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
 
-    Chunk chunk;
+    ArrayList<Chunk> chunks = new ArrayList<>();
 
     // GameManager Initialization Method
     public void initialize() {
@@ -49,11 +50,10 @@ public class GameManager {
 
         // Chunks (temporary initialization method)
         ChunkFactory chunkFactory = new ChunkFactory(world, noise);
-        chunk = chunkFactory.createChunk(0);
 
         // GamePanel
         gamePanel = new GamePanel();
-        gamePanel.initialize(true, textureHandler, gameObjects, player, chunk);
+        gamePanel.initialize(true, textureHandler, gameObjects, player, chunkFactory.node);
 
         // JFrame
         frame = new JFrame("Noise World");
@@ -66,6 +66,8 @@ public class GameManager {
         frame.addKeyListener(inputHandler);
         frame.setVisible(true);
     }
+
+    float playerPrevX = 0;
 
     public void update(float dt) {
         // Step Physics World

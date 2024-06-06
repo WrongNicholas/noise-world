@@ -2,6 +2,7 @@ package org.woji.core;
 
 import org.jbox2d.common.Vec2;
 import org.woji.world.Chunk;
+import org.woji.world.ChunkNode;
 import org.woji.world.ChunkRenderer;
 import org.woji.entity.GameObject;
 import org.woji.entity.Player;
@@ -21,13 +22,13 @@ public class GamePanel extends JPanel {
 
     ChunkRenderer chunkRenderer;
 
-    Chunk chunk;
+   ChunkNode node;
 
-    public void initialize(boolean drawHitBoxes, TextureHandler textureHandler, ArrayList<GameObject> gameObjects, Player player, Chunk chunk) {
+    public void initialize(boolean drawHitBoxes, TextureHandler textureHandler, ArrayList<GameObject> gameObjects, Player player, ChunkNode node) {
         this.drawHitBoxes = drawHitBoxes;
         this.gameObjects = gameObjects;
         this.player = player;
-        this.chunk = chunk;
+        this.node = node;
 
         chunkRenderer = new ChunkRenderer(textureHandler);
     }
@@ -60,7 +61,7 @@ public class GamePanel extends JPanel {
         // Paint GameObjects' BufferedImage
         objectsToPaint.stream().filter(Objects::nonNull).forEach(object -> paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize()));
 
-        chunkRenderer.render(chunk, g);
+        chunkRenderer.render(node, g);
     }
 
     private void paintBufferedImage(Graphics g, BufferedImage bufferedImage, Vec2 position, Vec2 size) {
