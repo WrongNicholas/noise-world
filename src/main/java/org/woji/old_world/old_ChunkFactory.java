@@ -1,31 +1,41 @@
-package org.woji.world;
+package org.woji.old_world;
 
 import de.articdive.jnoise.pipeline.JNoise;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 
-public class ChunkFactory {
+public class old_ChunkFactory {
 
-    private final JNoise noise;
+    public old_ChunkNode node;
 
+    // Constants for defining block and chunk dimensions
     private final int CHUNK_WIDTH = 16;
     private final int CHUNK_HEIGHT = 16;
-
     private final float BLOCK_SIZE = 64.f;
 
-    public ChunkFactory(JNoise noise) {
+    // Reference variables
+    private final World world;
+    private final JNoise noise;
+
+    public old_ChunkFactory(World world, JNoise noise) {
+        this.world = world;
         this.noise = noise;
+
+        node = new old_ChunkNode(0, createChunk(0));
+        node.next = new old_ChunkNode(node.index + 1, createChunk(node.index + 1));
+        node.prev = new old_ChunkNode(node.index -1, createChunk(node.index - 1));
     }
 
-    public Chunk generate(World world, int chunkPosition) {
-        int[] blockMap = new int[CHUNK_WIDTH * CHUNK_HEIGHT];
+    public old_Chunk createChunk(int chunkOffset) {
+         final float totalChunkWidthPixels = chunkOffset * CHUNK_WIDTH * BLOCK_SIZE;
+         final int[] blockMap = new int[CHUNK_WIDTH * CHUNK_HEIGHT];
 
-        // Initialize the block map values using JNoise
+         // Initialize the block map values using JNoise
         for (int x = 0; x < CHUNK_WIDTH; x++) {
 
             // Evaluate noise at current x position
-            double noiseValue = Math.abs(noise.evaluateNoise(x / 100.0));
+            double noiseValue = Math.abs(noise.evaluateNoise((totalChunkWidthPixels + x * BLOCK_SIZE) / 1000.0));
 
             // Calculate height based on noise value
             int height = (int)(noiseValue * CHUNK_HEIGHT);
@@ -47,7 +57,7 @@ public class ChunkFactory {
         // Create Body Definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
-        bodyDef.position.set(new Vec2(BLOCK_SIZE * CHUNK_WIDTH * chunkPosition, 0));
+        bodyDef.position.set(new Vec2(totalChunkWidthPixels, 0));
 
         // Create Body in Physics World
         Body body = world.createBody(bodyDef);
@@ -73,11 +83,9 @@ public class ChunkFactory {
             }
         }
 
-        Chunk chunk = new Chunk(body, blockMap, CHUNK_WIDTH, CHUNK_HEIGHT, chunkPosition, BLOCK_SIZE);
-        return chunk;
+        return new old_Chunk(body, blockMap, totalChunkWidthPixels);
+
     }
-
-
 
     private PolygonShape getPolygonShape(int x, int y) {
         PolygonShape shape = new PolygonShape();

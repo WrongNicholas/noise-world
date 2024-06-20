@@ -1,4 +1,4 @@
-package org.woji.world;
+package org.woji.old_world;
 
 import org.jbox2d.dynamics.Body;
 import org.woji.core.TextureHandler;
@@ -6,22 +6,22 @@ import org.woji.core.TextureHandler;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class ChunkRenderer {
+public class old_ChunkRenderer {
 
     private final TextureHandler textureHandler;
 
-    public ChunkRenderer(TextureHandler textureHandler) {
+    public old_ChunkRenderer(TextureHandler textureHandler) {
         this.textureHandler = textureHandler;
     }
 
-    public void render(ChunkNode node, Graphics g) {
+    public void render(old_ChunkNode node, Graphics g) {
         render(node.chunk, g);
         render(node.prev.chunk, g);
         render(node.next.chunk, g);
     }
 
     // Renders the given chunk onto current graphics context
-    private void render(Chunk chunk, Graphics g) {
+    private void render(old_Chunk chunk, Graphics g) {
         Body body = chunk.body();
 
         // Skip render if physics body is inactive

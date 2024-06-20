@@ -3,6 +3,7 @@ package org.woji.core;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
+import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.woji.entity.GameObject;
@@ -11,7 +12,6 @@ import org.woji.world.Chunk;
 import org.woji.world.ChunkFactory;
 
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameManager {
@@ -25,14 +25,13 @@ public class GameManager {
     // GameObjects
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
-
-    ArrayList<Chunk> chunks = new ArrayList<>();
+    private Chunk mainChunk;
 
     // GameManager Initialization Method
     public void initialize() {
 
         // JBox2D World
-        world = new World(new Vec2(0f, 1600.f));
+        world = new World(new Vec2(0f, 15.f));
 
         // InputHandler
         this.inputHandler = new InputHandler();
@@ -48,12 +47,11 @@ public class GameManager {
         // JNoise
         JNoise noise = JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
 
-        // Chunks (temporary initialization method)
-        ChunkFactory chunkFactory = new ChunkFactory(world, noise);
+        mainChunk = new ChunkFactory(noise).generate(world, 0);
 
         // GamePanel
         gamePanel = new GamePanel();
-        gamePanel.initialize(true, textureHandler, gameObjects, player, chunkFactory.node);
+        gamePanel.initialize(textureHandler, gameObjects, player, mainChunk);
 
         // JFrame
         frame = new JFrame("Noise World");
@@ -65,9 +63,8 @@ public class GameManager {
         frame.add(gamePanel);
         frame.addKeyListener(inputHandler);
         frame.setVisible(true);
-    }
 
-    float playerPrevX = 0;
+    }
 
     public void update(float dt) {
         // Step Physics World
@@ -80,10 +77,18 @@ public class GameManager {
         for (GameObject gameObject : gameObjects) {
             gameObject.update(dt);
         }
+
+        System.out.println(inChunk(player, mainChunk));
+    }
+
+    public boolean inChunk(Player player, Chunk chunk) {
+        Vec2 point = player.getPosition();
+        AABB aabb = mainChunk.getBounds();
+        return point.x >= aabb.lowerBound.x && point.x <= aabb.upperBound.x;
     }
 
     public void render() {
-        gamePanel.update(inputHandler.shouldShowHitBoxes());
+        //gamePanel.update(inputHandler.shouldShowHitBoxes());
         gamePanel.repaint();
     }
 

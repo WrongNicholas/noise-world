@@ -39,8 +39,8 @@ public class Player extends GameObject {
             return;
         }
 
-        float speed = 350.f;
-        float jumpForce = 660.f;
+        float speed = 25.f;
+        float jumpForce = 64.f;
 
         // Calculate Movement Vector
         Vec2 inputVector = inputHandler.getInputVector();
@@ -58,6 +58,13 @@ public class Player extends GameObject {
             body.setLinearVelocity(new Vec2(body.getLinearVelocity().x, body.getLinearVelocity().y * 0.6f));
         }
         previousJumpPressed = jumpPressed;
+    }
+
+    public AABB getBounds() {
+        Vec2 topLeft = body.getPosition().clone().add(new Vec2(-getSize().x / 2.f, 0));
+        Vec2 bottomRight = body.getPosition().clone().add(new Vec2(getSize().x / 2.f, getSize().y));
+
+        return new AABB(topLeft, bottomRight);
     }
 
     private void checkGrounded() {

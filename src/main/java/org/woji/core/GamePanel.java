@@ -1,11 +1,12 @@
 package org.woji.core;
 
 import org.jbox2d.common.Vec2;
-import org.woji.world.Chunk;
-import org.woji.world.ChunkNode;
-import org.woji.world.ChunkRenderer;
+import org.w3c.dom.Text;
+import org.woji.old_world.old_ChunkNode;
+import org.woji.old_world.old_ChunkRenderer;
 import org.woji.entity.GameObject;
 import org.woji.entity.Player;
+import org.woji.world.Chunk;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,26 +16,24 @@ import java.util.Objects;
 
 public class GamePanel extends JPanel {
 
-    private boolean drawHitBoxes;
-
     private ArrayList<GameObject> gameObjects;
     private Player player;
 
-    ChunkRenderer chunkRenderer;
+    private TextureHandler textureHandler;
 
-   ChunkNode node;
+    private Chunk mainChunk;
 
-    public void initialize(boolean drawHitBoxes, TextureHandler textureHandler, ArrayList<GameObject> gameObjects, Player player, ChunkNode node) {
-        this.drawHitBoxes = drawHitBoxes;
+    public void initialize(TextureHandler textureHandler, ArrayList<GameObject> gameObjects, Player player, Chunk mainChunk) {
+        this.textureHandler = textureHandler;
+
         this.gameObjects = gameObjects;
         this.player = player;
-        this.node = node;
 
-        chunkRenderer = new ChunkRenderer(textureHandler);
+        this.mainChunk = mainChunk;
     }
 
-    public void update(boolean drawHitBoxes) {
-        this.drawHitBoxes = drawHitBoxes;
+    public void update(Chunk mainChunk) {
+        this.mainChunk = mainChunk;
     }
 
     @Override
@@ -61,17 +60,40 @@ public class GamePanel extends JPanel {
         // Paint GameObjects' BufferedImage
         objectsToPaint.stream().filter(Objects::nonNull).forEach(object -> paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize()));
 
-        chunkRenderer.render(node, g);
+        paintChunks(g);
+    }
+
+    private void paintChunks(Graphics g) {
+
+        float blockSize = mainChunk.blockSizePixels();
+
+        for (int x = 0; x < mainChunk.width(); x++) {
+            for (int y = 0; y < mainChunk.height(); y++) {
+                // Retrieve ID of block at current position
+                int blockID = mainChunk.blockMap()[x + mainChunk.width() * y];
+
+                // Skip rendering if block ID is 0 (empty block)
+                if (blockID == 0) {
+                    continue;
+                }
+
+                // Get blockImage for corresponding blockID from TextureHandler
+                BufferedImage blockImage = textureHandler.getBufferedImage(blockID);
+
+                // Calculate draw positions of block
+                float totalChunkWidthPixels = blockSize * mainChunk.width() * mainChunk.position();
+                int drawX = (int)(x * blockSize + totalChunkWidthPixels + blockSize / 2.f);
+                int drawY = (int)(y * blockSize + blockSize / 2.f);
+
+                // Draw blockImage onto Graphics context
+                g.drawImage(blockImage, drawX, drawY, (int)blockSize, (int)blockSize, null);
+            }
+        }
     }
 
     private void paintBufferedImage(Graphics g, BufferedImage bufferedImage, Vec2 position, Vec2 size) {
         // Paint BufferedImage
         g.drawImage(bufferedImage, (int)position.x, (int)position.y, (int)size.x, (int)size.y, null);
-
-        if (drawHitBoxes) {
-            g.setColor(Color.RED);
-            g.drawRect((int) position.x, (int) position.y, (int) size.x, (int) size.y);
-        }
     }
 
     private void paintPlayer(Graphics g) {

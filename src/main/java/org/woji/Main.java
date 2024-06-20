@@ -9,14 +9,14 @@ public class Main {
         GameManager game = new GameManager();
         game.initialize();
 
-        long previousTime = System.currentTimeMillis();
         while (game.running()) {
-            long currentTime = System.currentTimeMillis();
-            float deltaTime = currentTime - previousTime;
-            previousTime = currentTime;
+            float deltaTime = 1f/60f;
 
-            // Convert deltaTime to seconds
-            deltaTime = deltaTime / 1_000;
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             game.update(deltaTime);
             game.render();
