@@ -25,7 +25,8 @@ public class ChunkFactory {
         for (int x = 0; x < CHUNK_WIDTH; x++) {
 
             // Evaluate noise at current x position
-            double noiseValue = Math.abs(noise.evaluateNoise(x / 100.0));
+            double noiseValue = Math.abs(noise.evaluateNoise((x + (float)CHUNK_WIDTH * chunkPosition) / 20.0));
+            //System.out.println(noiseValue);
 
             // Calculate height based on noise value
             int height = (int)(noiseValue * CHUNK_HEIGHT);
@@ -73,11 +74,9 @@ public class ChunkFactory {
             }
         }
 
-        Chunk chunk = new Chunk(body, blockMap, CHUNK_WIDTH, CHUNK_HEIGHT, chunkPosition, BLOCK_SIZE);
+        Chunk chunk = new Chunk(body, blockMap, CHUNK_WIDTH, CHUNK_HEIGHT, chunkPosition, BLOCK_SIZE, null, null);
         return chunk;
     }
-
-
 
     private PolygonShape getPolygonShape(int x, int y) {
         PolygonShape shape = new PolygonShape();

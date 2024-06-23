@@ -13,6 +13,7 @@ import org.woji.world.ChunkFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameManager {
 
@@ -26,6 +27,8 @@ public class GameManager {
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
     private Chunk mainChunk;
+
+    private ChunkFactory factory;
 
     // GameManager Initialization Method
     public void initialize() {
@@ -45,9 +48,14 @@ public class GameManager {
         player = new Player(inputHandler, world, playerPosition, textureHandler);
 
         // JNoise
-        JNoise noise = JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
+        Random random = new Random();
+        int noiseValue = random.nextInt(9999);
+        System.out.println(noiseValue);
+        JNoise noise = JNoise.newBuilder().perlin(noiseValue, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
+        factory = new ChunkFactory(noise);
 
-        mainChunk = new ChunkFactory(noise).generate(world, 0);
+        mainChunk = factory.generate(world, 0);
+        initializeMainChunk();
 
         // GamePanel
         gamePanel = new GamePanel();
@@ -55,7 +63,7 @@ public class GameManager {
 
         // JFrame
         frame = new JFrame("Noise World");
-        frame.setSize(800, 800);
+        frame.setSize(1500, 800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -78,17 +86,53 @@ public class GameManager {
             gameObject.update(dt);
         }
 
-        System.out.println(inChunk(player, mainChunk));
+        ensurePlayerInMainChunk();
     }
 
-    public boolean inChunk(Player player, Chunk chunk) {
+    private void ensurePlayerInMainChunk() {
+        int playerChunkRelativePosition = getPlayerRelativeChunkPosition(player, mainChunk);
+
+        if (playerChunkRelativePosition != 0) {
+            if (playerChunkRelativePosition == 1) {
+                mainChunk.prev.unload();
+                mainChunk = mainChunk.next;
+            }
+            else if (playerChunkRelativePosition == -1) {
+                mainChunk.next.unload();
+                mainChunk = mainChunk.prev;
+            }
+
+            initializeMainChunk();
+            gamePanel.lazyUpdate(mainChunk);
+        }
+    }
+
+    private void initializeMainChunk() {
+        if (mainChunk.next == null) {
+            mainChunk.next = factory.generate(world, mainChunk.position() + 1);
+            mainChunk.next.prev = mainChunk;
+        } else mainChunk.next.load();
+
+        if (mainChunk.prev == null) {
+            mainChunk.prev = factory.generate(world, mainChunk.position() - 1);
+            mainChunk.prev.next = mainChunk;
+        } else mainChunk.prev.load();
+    }
+
+    public int getPlayerRelativeChunkPosition(Player player, Chunk chunk) {
         Vec2 point = player.getPosition();
         AABB aabb = mainChunk.getBounds();
-        return point.x >= aabb.lowerBound.x && point.x <= aabb.upperBound.x;
+
+        if (point.x >= aabb.lowerBound.x && point.x <= aabb.upperBound.x)
+            return 0;
+
+        if (point.x < aabb.lowerBound.x)
+            return -1;
+
+        return 1;
     }
 
     public void render() {
-        //gamePanel.update(inputHandler.shouldShowHitBoxes());
         gamePanel.repaint();
     }
 

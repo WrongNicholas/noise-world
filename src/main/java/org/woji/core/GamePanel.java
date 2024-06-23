@@ -1,9 +1,6 @@
 package org.woji.core;
 
 import org.jbox2d.common.Vec2;
-import org.w3c.dom.Text;
-import org.woji.old_world.old_ChunkNode;
-import org.woji.old_world.old_ChunkRenderer;
 import org.woji.entity.GameObject;
 import org.woji.entity.Player;
 import org.woji.world.Chunk;
@@ -32,7 +29,7 @@ public class GamePanel extends JPanel {
         this.mainChunk = mainChunk;
     }
 
-    public void update(Chunk mainChunk) {
+    public void lazyUpdate(Chunk mainChunk) {
         this.mainChunk = mainChunk;
     }
 
@@ -60,17 +57,23 @@ public class GamePanel extends JPanel {
         // Paint GameObjects' BufferedImage
         objectsToPaint.stream().filter(Objects::nonNull).forEach(object -> paintBufferedImage(g, object.getBufferedImage(), object.getPosition(), object.getSize()));
 
-        paintChunks(g);
+        paintMainChunkGroup(g);
     }
 
-    private void paintChunks(Graphics g) {
+    private void paintMainChunkGroup(Graphics g) {
+        paintChunk(g, mainChunk);
+        paintChunk(g, mainChunk.prev);
+        paintChunk(g, mainChunk.next);
 
-        float blockSize = mainChunk.blockSizePixels();
+    }
 
-        for (int x = 0; x < mainChunk.width(); x++) {
-            for (int y = 0; y < mainChunk.height(); y++) {
+    private void paintChunk(Graphics g, Chunk chunk) {
+        float blockSize = chunk.blockSizePixels();
+
+        for (int x = 0; x < chunk.width(); x++) {
+            for (int y = 0; y < chunk.height(); y++) {
                 // Retrieve ID of block at current position
-                int blockID = mainChunk.blockMap()[x + mainChunk.width() * y];
+                int blockID = chunk.blockMap()[x + chunk.width() * y];
 
                 // Skip rendering if block ID is 0 (empty block)
                 if (blockID == 0) {
@@ -81,7 +84,7 @@ public class GamePanel extends JPanel {
                 BufferedImage blockImage = textureHandler.getBufferedImage(blockID);
 
                 // Calculate draw positions of block
-                float totalChunkWidthPixels = blockSize * mainChunk.width() * mainChunk.position();
+                float totalChunkWidthPixels = blockSize * chunk.width() * chunk.position();
                 int drawX = (int)(x * blockSize + totalChunkWidthPixels + blockSize / 2.f);
                 int drawY = (int)(y * blockSize + blockSize / 2.f);
 
