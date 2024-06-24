@@ -3,6 +3,7 @@ package org.woji.core;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
+import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.woji.entity.GameObject;
@@ -11,8 +12,8 @@ import org.woji.world.Chunk;
 import org.woji.world.ChunkFactory;
 
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameManager {
 
@@ -25,14 +26,15 @@ public class GameManager {
     // GameObjects
     private Player player;
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private Chunk mainChunk;
 
-    ArrayList<Chunk> chunks = new ArrayList<>();
+    private ChunkFactory factory;
 
     // GameManager Initialization Method
     public void initialize() {
 
         // JBox2D World
-        world = new World(new Vec2(0f, 1600.f));
+        world = new World(new Vec2(0f, 15.f));
 
         // InputHandler
         this.inputHandler = new InputHandler();
@@ -46,18 +48,22 @@ public class GameManager {
         player = new Player(inputHandler, world, playerPosition, textureHandler);
 
         // JNoise
-        JNoise noise = JNoise.newBuilder().perlin(3301, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
+        Random random = new Random();
+        int noiseValue = random.nextInt(9999);
+        System.out.println(noiseValue);
+        JNoise noise = JNoise.newBuilder().perlin(noiseValue, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).build();
+        factory = new ChunkFactory(noise);
 
-        // Chunks (temporary initialization method)
-        ChunkFactory chunkFactory = new ChunkFactory(world, noise);
+        mainChunk = factory.generate(world, 0);
+        initializeMainChunk();
 
         // GamePanel
         gamePanel = new GamePanel();
-        gamePanel.initialize(true, textureHandler, gameObjects, player, chunkFactory.node);
+        gamePanel.initialize(textureHandler, gameObjects, player, mainChunk);
 
         // JFrame
         frame = new JFrame("Noise World");
-        frame.setSize(800, 800);
+        frame.setSize(1500, 800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -65,9 +71,8 @@ public class GameManager {
         frame.add(gamePanel);
         frame.addKeyListener(inputHandler);
         frame.setVisible(true);
-    }
 
-    float playerPrevX = 0;
+    }
 
     public void update(float dt) {
         // Step Physics World
@@ -80,10 +85,54 @@ public class GameManager {
         for (GameObject gameObject : gameObjects) {
             gameObject.update(dt);
         }
+
+        ensurePlayerInMainChunk();
+    }
+
+    private void ensurePlayerInMainChunk() {
+        int playerChunkRelativePosition = getPlayerRelativeChunkPosition(player, mainChunk);
+
+        if (playerChunkRelativePosition != 0) {
+            if (playerChunkRelativePosition == 1) {
+                mainChunk.prev.unload();
+                mainChunk = mainChunk.next;
+            }
+            else if (playerChunkRelativePosition == -1) {
+                mainChunk.next.unload();
+                mainChunk = mainChunk.prev;
+            }
+
+            initializeMainChunk();
+            gamePanel.lazyUpdate(mainChunk);
+        }
+    }
+
+    private void initializeMainChunk() {
+        if (mainChunk.next == null) {
+            mainChunk.next = factory.generate(world, mainChunk.position() + 1);
+            mainChunk.next.prev = mainChunk;
+        } else mainChunk.next.load();
+
+        if (mainChunk.prev == null) {
+            mainChunk.prev = factory.generate(world, mainChunk.position() - 1);
+            mainChunk.prev.next = mainChunk;
+        } else mainChunk.prev.load();
+    }
+
+    public int getPlayerRelativeChunkPosition(Player player, Chunk chunk) {
+        Vec2 point = player.getPosition();
+        AABB aabb = mainChunk.getBounds();
+
+        if (point.x >= aabb.lowerBound.x && point.x <= aabb.upperBound.x)
+            return 0;
+
+        if (point.x < aabb.lowerBound.x)
+            return -1;
+
+        return 1;
     }
 
     public void render() {
-        gamePanel.update(inputHandler.shouldShowHitBoxes());
         gamePanel.repaint();
     }
 
