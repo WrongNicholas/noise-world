@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GameManager {
+public class GameManager implements Runnable {
 
     // Private Field Variables
     private World world;
@@ -34,7 +34,7 @@ public class GameManager {
     public void initialize() {
 
         // JBox2D World
-        world = new World(new Vec2(0f, 15.f));
+        world = new World(new Vec2(0f, 20));
 
         // InputHandler
         this.inputHandler = new InputHandler();
@@ -76,7 +76,7 @@ public class GameManager {
 
     public void update(float dt) {
         // Step Physics World
-        world.step(dt, 6, 2);
+        world.step(dt, 20, 10);
 
         // Update Player
         player.update(dt);
@@ -143,4 +143,45 @@ public class GameManager {
     public void terminate() {
         frame.dispose();
     }
+
+    public void start() {
+        Thread gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    @Override
+    public void run() {
+        double FPS = 60;
+        double drawInterval = 100000000/FPS;
+        double nextDrawTime = System.nanoTime() + drawInterval;
+
+        while (running()) {
+            float timeStep = 1f/60f;
+
+            update(timeStep);
+            render();
+
+            try {
+                double remainingTime = nextDrawTime - System.nanoTime();
+                remainingTime /= 1000000;
+
+                if(remainingTime < 0) {
+                    remainingTime = 0;
+                }
+
+                if (remainingTime != 0)
+                    Thread.sleep((long)remainingTime);
+
+                nextDrawTime += drawInterval;
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        terminate();
+        System.exit(0);
+    }
+
+
 }
