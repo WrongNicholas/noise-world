@@ -73,9 +73,7 @@ public class ChunkFactory {
                 body.createFixture(fixtureDef);
             }
         }
-
-        Chunk chunk = new Chunk(body, blockMap, CHUNK_WIDTH, CHUNK_HEIGHT, chunkPosition, BLOCK_SIZE, null, null);
-        return chunk;
+        return new Chunk(body, blockMap, CHUNK_WIDTH, CHUNK_HEIGHT, chunkPosition, BLOCK_SIZE, null, null);
     }
 
     private PolygonShape getPolygonShape(int x, int y) {
