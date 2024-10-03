@@ -1,3 +1,5 @@
+# Note: This project is archived!
+
 # Noise World
 
 ## Description
